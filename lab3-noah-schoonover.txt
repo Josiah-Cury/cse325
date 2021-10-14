@@ -20,3 +20,10 @@ scheduler() method. This led to problems such as not being able to run the ps
 command. To remedy this issue, we created a nested loop to iterate through all
 processes and search for the highest priority in succession.
 
+
+PEER EVALUATION REPORT:
+
+Josiah works very efficiently and did an excellent job. 
+He is pretty cool guy too.
+He deserves the highest grade possible!
+
