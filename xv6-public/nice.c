@@ -3,6 +3,9 @@
 #include "user.h"
 #include "fcntl.h"
 
+
+/* Created nice.c to accept command line arguments to change process priority
+ * 		-Josiah */
 int
 main(int argc, char *argv[])
 {

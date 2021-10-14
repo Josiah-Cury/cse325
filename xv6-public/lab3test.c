@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 		}
 		else if(id > 0){ // parent
 			printf(1, "Parent %d creating child %d\n", getpid(), id);
-			//I added only this wait line and I found the funciton in proc.c- Josiah <3
+			//I added only this wait line and I found the funciton in proc.c -Josiah
 			wait();
 		} else{ // child
 			printf(1, "Child %d created\n", getpid());
