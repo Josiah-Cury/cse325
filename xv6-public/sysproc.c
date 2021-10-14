@@ -89,3 +89,29 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+int
+sys_cps(void){
+  return cps();	
+}
+
+int
+sys_set_priority(void)
+{
+	int pid, priority;
+	argint(0, &pid);
+	argint(1, &priority);
+	
+	//cprintf("Within sys_set_priority: Pid:%d\tPriority:%d\n", pid, priority);
+	
+	return set_priority(pid, priority);
+}
+
+int
+sys_get_priority(void)
+{
+	int pid;
+	argint(0, &pid);
+	
+	return get_priority(pid);
+}

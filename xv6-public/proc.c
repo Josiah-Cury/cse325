@@ -215,6 +215,7 @@ fork(void)
   acquire(&ptable.lock);
 
   np->state = RUNNABLE;
+  np->nice = 20;
 
   release(&ptable.lock);
 
@@ -531,4 +532,81 @@ procdump(void)
     }
     cprintf("\n");
   }
+}
+
+//current process status
+int
+cps()
+{
+   struct proc *p;
+   //Enabl interrupts on this processor
+   sti();
+   //Loop over process table looking for process with pid
+   acquire(&ptable.lock);
+   cprintf("name \t pid \t state \t\t priority\n");
+   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      if(p->state == SLEEPING)
+         cprintf("%s \t %d \t SLEEPING \t %d\n", p->name, p->pid, p->nice);
+      else if(p->state == RUNNING)
+         cprintf("%s \t %d \t RUNNING \t %d\n", p->name, p->pid, p->nice);
+      else if(p->state == RUNNABLE)
+         cprintf("%s \t %d \t RUNNABLE \t %d\n", p->name, p->pid, p->nice);
+   }
+   release(&ptable.lock);
+   return 22;
+}
+
+//set process priority
+int
+set_priority(int pid, int priority)
+{
+	//cprintf("\nRunning set_priority for pid: %d\n", pid);
+	struct proc *p;
+	
+	if(priority < 0) {
+		//cprintf("Silently clamped to 0.\n");
+		priority = 0;
+	} else if(priority > 39) {
+		//cprintf("Silently clamped to 39.\n");
+		priority = 39;
+	}
+	
+	acquire(&ptable.lock);
+
+	for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+		if(p->pid == pid){
+			p->nice = priority;
+			//cprintf("Pid: %d\tName: %s\tPriority: %d\n", pid, p->name, p->nice);
+		  release(&ptable.lock);
+			return 0;
+		}
+	}
+	
+	cprintf("Did not find pid=%d\n", pid);
+	release(&ptable.lock);
+
+	return -1;
+}
+
+//get process priority
+int
+get_priority(int pid)
+{
+	//cprintf("\nRunning get_priority for pid: %d\n", pid);
+	struct proc *p;
+	
+	acquire(&ptable.lock);
+
+	for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+		if(p->pid == pid){
+			//cprintf("Pid: %d\tName: %s\tPriority: %d\n\n", pid, p->name, p->nice);
+			release(&ptable.lock);
+			return 0;
+		}
+	}
+	
+	cprintf("Did not find pid=%d\n", pid);
+	release(&ptable.lock);
+
+	return -1;
 }
