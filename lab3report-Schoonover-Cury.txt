@@ -1,0 +1,31 @@
+SeaBIOS (version 1.13.0-1ubuntu1.1)
+
+
+iPXE (http://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+1FF8CA10+1FECCA10 CA00
+                                                                               
+
+
+Booting from Hard Disk..xv6...
+cpu1: starting 1
+cpu0: starting 0
+sb: size 1000 nblocks 941 ninodes 200 nlog 30 logstart 2 inodestart 32 bmap start 58
+init: starting sh
+$ lab3test 4 &
+$ Parent 4 creating child 5
+Child 5 created
+ps
+name 	 pid 	 state 		 priority
+init 	 1 	 SLEEPING 	 0
+sh 	 2 	 SLEEPING 	 20
+lab3test 	 5 	 RUNNING 	 20
+lab3test 	 4 	 SLEEPING 	 20
+ps 	 6 	 RUNNING 	 20
+$ nice 5 18
+$ ps
+name 	 pid 	 state 		 priority
+init 	 1 	 SLEEPING 	 0
+sh 	 2 	 SLEEPING 	 20
+lab3test 	 5 	 RUNNING 	 18
+lab3test 	 4 	 SLEEPING 	 20
+ps 	 8 	 RUNNING 	 20
+
