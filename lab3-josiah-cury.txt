@@ -1,0 +1,33 @@
+ESTIMATE of time to complete lab: 4 hours
+ 
+      Start  Time  Lab
+Date  Time   Spent Part Work completed
+----  -----  ----  ---- ---------
+10/12  15:00  0:30  1   Read assignment, modified ps.c, and finished Task 1.
+
+10/12  15:30  1:00  2   Created nice.c, added lab3test.c, and finished Task 2.
+					
+10/12  16:30  0:30  3   Added wait() to lab3test.c, recorded output, and 
+												finished Task 3.
+
+10/13  17:00  1:00  4   Worked with partner on Task 4 concept and discussed 
+												bugs together.
+												
+10/13  17:00  0:30  2   Created personal timelog and peer evaluation.						
+-------------------------------------------------------------------------------
+	    	     5:00  TOTAL time spent
+	    	     
+The biggest difficulty I encountered was an error in priority scheduling. My
+partner and I took the time to work through and discuss the error and come to
+a solution. 
+
+The only other difficulty, that was self imposed, is that we decided to use git
+to collaborate. My partner helped me set up a remote git to expedite our
+productivity and improve collaboration.
+
+
+Peer Evaluation:
+
+My partner and I evenly divided the work and assisted each other. They also
+helped me set up a git so that way we could collaborate. The project went very
+well and there were no issues as a team!
