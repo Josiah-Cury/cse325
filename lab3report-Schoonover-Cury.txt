@@ -1,12 +1,5 @@
 Task 1:
 
-		SeaBIOS (version 1.13.0-1ubuntu1.1)
-
-
-		iPXE (http://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+1FF8CA10+1FECCA10 CA00
-				                                                                           
-
-
 		Booting from Hard Disk..xv6...
 		cpu1: starting 1
 		cpu0: starting 0
@@ -20,13 +13,6 @@ Task 1:
 
 -----------------------------------------------------------------------------------------
 Task 2:
-
-		SeaBIOS (version 1.13.0-1ubuntu1.1)
-
-
-		iPXE (http://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+1FF8CA10+1FECCA10 CA00
-				                                                                           
-
 
 		Booting from Hard Disk..xv6...
 		cpu1: starting 1
@@ -55,34 +41,131 @@ Task 2:
 -----------------------------------------------------------------------------------------
 Task 3:
 
-		SeaBIOS (version 1.13.0-1ubuntu1.1)
 
-
-		iPXE (http://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+1FF8CA10+1FECCA10 CA00
-				                                                                           
-
-
-		Booting from Hard Disk..xv6...
+		xv6...
 		cpu1: starting 1
 		cpu0: starting 0
 		sb: size 1000 nblocks 941 ninodes 200 nlog 30 logstart 2 inodestart 32 bmap start 58
 		init: starting sh
-		$ lab3test 4 &
-		$ Parent 4 creating child 5
-		Child 5 created
-		ps
-		name 	 pid 	 state 		 priority
-		init 	 1 	 SLEEPING 	 0
-		sh 	 2 	 SLEEPING 	 20
-		lab3test 	 5 	 RUNNING 	 20
-		lab3test 	 4 	 SLEEPING 	 20
-		ps 	 6 	 RUNNING 	 20
-		$ nice 5 18
 		$ ps
-		name 	 pid 	 state 		 priority
-		init 	 1 	 SLEEPING 	 0
-		sh 	 2 	 SLEEPING 	 20
-		lab3test 	 5 	 RUNNING 	 18
-		lab3test 	 4 	 SLEEPING 	 20
-		ps 	 8 	 RUNNING 	 20
+		name 		 pid 	 state 		 priority
+		init 		 1 	 SLEEPING 	 10
+		sh 		 2 	 SLEEPING 	 10
+		ps 		 3 	 RUNNING 	 10
+		$ lab3test &;lab3test &;lab3test &;
+		$ Parent 6 creating child 11
+		Child 11 created
+		Parent 8 creating child 12
+		Parent 10 creating Child 13 created
+		Cchild 13
+		hild 12 created
+		ps
+		name 		 pid 	 state 		 priority
+		init 		 1 	 SLEEPING 	 10
+		sh 		 2 	 SLEEPING 	 10
+		lab3test 		 11 	 RUNNABLE 	 20
+		lab3test 		 12 	 RUNNING 	 20
+		lab3test 		 6 	 SLEEPING 	 10
+		lab3test 		 8 	 SLEEPING 	 10
+		lab3test 		 10 	 SLEEPING 	 10
+		lab3test 		 13 	 RUNNABLE 	 20
+		ps 		 14 	 RUNNING 	 10
+		$ ps
+		name 		 pid 	 state 		 priority
+		init 		 1 	 SLEEPING 	 10
+		sh 		 2 	 SLEEPING 	 10
+		lab3test 		 11 	 RUNNABLE 	 20
+		lab3test 		 12 	 RUNNABLE 	 20
+		lab3test 		 6 	 SLEEPING 	 10
+		lab3test 		 8 	 SLEEPING 	 10
+		lab3test 		 10 	 SLEEPING 	 10
+		lab3test 		 13 	 RUNNING 	 20
+		ps 		 15 	 RUNNING 	 10
+
+		
+
+Observations:
+	
+		The processes are running irrespective to priority in a Round Robin 
+		manner. After running the ps command at varied intervals, we see that
+		a lower priority process may supercede a higher priority process. 
+		
+		
+				
+-----------------------------------------------------------------------------------------
+Task 4:	
+		
+		xv6...
+		cpu1: starting 1
+		cpu0: starting 0
+		sb: size 1000 nblocks 941 ninodes 200 nlog 30 logstart 2 inodestart 32 bmap start 58
+		init: starting sh
+		$ ps
+		name 		 pid 	 state 		 priority
+		--------------------------------------------------
+		init 
+				 1 	 SLEEPING 	 10
+		sh 
+				 2 	 SLEEPING 	 10
+		ps 
+				 3 	 RUNNING 	 10
+		$ lab3test &; lab3test &; lab3test &
+		$ Parent 8 creating child 10
+		CParent 6 creating child 11
+		hild 1C0 created
+		Phild 11 created
+		arent 9 creating child 12
+		Child 12 created
+		ps
+		name 		 pid 	 state 		 priority
+		--------------------------------------------------
+		init 
+				 1 	 SLEEPING 	 10
+		sh 
+				 2 	 SLEEPING 	 10
+		lab3test 
+				 10 	 RUNNING 	 20
+		lab3test 
+				 9 	 SLEEPING 	 10
+		lab3test 
+				 6 	 SLEEPING 	 10
+		lab3test 
+				 8 	 SLEEPING 	 10
+		lab3test 
+				 11 	 RUNNABLE 	 20
+		lab3test 
+				 12 	 RUNNABLE 	 20
+		ps 
+				 13 	 RUNNING 	 10
+		$ nice 11 5
+		$ ps
+		name 		 pid 	 state 		 priority
+		--------------------------------------------------
+		init 
+				 1 	 SLEEPING 	 10
+		sh 
+				 2 	 SLEEPING 	 10
+		lab3test 
+				 10 	 RUNNABLE 	 20
+		lab3test 
+				 9 	 SLEEPING 	 10
+		lab3test 
+				 6 	 SLEEPING 	 10
+		lab3test 
+				 8 	 SLEEPING 	 10
+		lab3test 
+				 11 	 RUNNING 	 5
+		lab3test 
+				 12 	 RUNNABLE 	 20
+		ps 
+				 15 	 RUNNING 	 10
+
+
+Observations:
+	
+		With the priority-based scheduling algorithm implemented, we find that
+		the processes with the highest priority (i.e. lowest priority number)
+		are selected by the scheduler to run first. This is evident in the 
+		printout above; the process PID 11, Priority 5 supercedes all other 
+		runnable processes.
 

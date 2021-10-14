@@ -324,6 +324,8 @@ void
 scheduler(void)
 {
   struct proc *p;
+  struct proc *pp;	// incremental pointer for inner ptable loop -nps
+  struct proc *nicepp; // stores a pointer to the highest priority process -nps
   struct cpu *c = mycpu();
   c->proc = 0;
   
@@ -333,23 +335,37 @@ scheduler(void)
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
+    
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->state != RUNNABLE)
         continue;
-
+        
+      nicepp = p;
+      
+      for(pp = ptable.proc; pp < &ptable.proc[NPROC]; pp++){
+		    if(pp->state != RUNNABLE)
+		      continue;
+        
+		    if (pp->nice < nicepp->nice) {
+		    	nicepp = pp;
+		    }
+		    
+		  }
+      
       // Switch to chosen process.  It is the process's job
-      // to release ptable.lock and then reacquire it
-      // before jumping back to us.
-      c->proc = p;
-      switchuvm(p);
-      p->state = RUNNING;
+			// to release ptable.lock and then reacquire it
+			// before jumping back to us.
+			c->proc = nicepp;
+			switchuvm(nicepp);
+			nicepp->state = RUNNING;
 
-      swtch(&(c->scheduler), p->context);
-      switchkvm();
+			swtch(&(c->scheduler), nicepp->context);
+			switchkvm();
 
-      // Process is done running for now.
-      // It should have changed its p->state before coming back.
-      c->proc = 0;
+			// Process is done running for now.
+			// It should have changed its p->state before coming back.
+			c->proc = 0;
+
     }
     release(&ptable.lock);
 
@@ -543,17 +559,17 @@ cps()
    sti();
    //Loop over process table looking for process with pid
    acquire(&ptable.lock);
-   cprintf("name \t\t pid \t state \t\t priority\n");
+   cprintf("name \t\t pid \t state \t\t priority\n--------------------------------------------------\n");
    
    /* Added priority print to the current process status -Josiah */
    
    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->state == SLEEPING)
-         cprintf("%s \t\t %d \t SLEEPING \t %d\n", p->name, p->pid, p->nice);
+         cprintf("%s \n\t\t %d \t SLEEPING \t %d\n", p->name, p->pid, p->nice);
       else if(p->state == RUNNING)
-         cprintf("%s \t\t %d \t RUNNING \t %d\n", p->name, p->pid, p->nice);
+         cprintf("%s \n\t\t %d \t RUNNING \t %d\n", p->name, p->pid, p->nice);
       else if(p->state == RUNNABLE)
-         cprintf("%s \t\t %d \t RUNNABLE \t %d\n", p->name, p->pid, p->nice);
+         cprintf("%s \n\t\t %d \t RUNNABLE \t %d\n", p->name, p->pid, p->nice);
    }
    release(&ptable.lock);
    return 22;

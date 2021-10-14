@@ -1,0 +1,22 @@
+ESTIMATE of time to complete lab: 4 hours
+
+       Start  Time  Lab
+Date   Time   Spent Part  Work completed
+----   -----  ----  ----  ---------
+10/13  12:30  1:00  4     Exercise 4
+10/13  2:45   1:00  4     Exercise 5
+10/14  5:30   1:00  ?     Finalized Report
+10/14  6:00   0:30  ?     Time Logging
+
+	    	     -----
+	    	     3:30  TOTAL time spent
+
+The greatest difficulty we faced during this lab was reading reading chapter 5
+in the xv6 book.
+
+Other than that, we had a small bug in the priority scheduler. When we first
+implemented the scheduler, we chose only one process at a time in the 
+scheduler() method. This led to problems such as not being able to run the ps
+command. To remedy this issue, we created a nested loop to iterate through all
+processes and search for the highest priority in succession.
+
