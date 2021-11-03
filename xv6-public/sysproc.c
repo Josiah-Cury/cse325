@@ -89,3 +89,27 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+int 
+sys_thread_create(void) 
+{
+	void (*fn)(void*), *arg, *stack;
+	
+	argptr(0, (void*)&fn, sizeof(void (*)(void*)));
+	argptr(1, (void*)&arg, sizeof(void*));
+	argptr(2, (void*)&stack, sizeof(void*));
+	
+	return thread_create(fn, arg, stack);
+}
+
+int 
+sys_thread_join(void) 
+{
+	return thread_join();
+}
+
+int 
+sys_thread_exit(void) 
+{
+	return thread_exit();
+}
