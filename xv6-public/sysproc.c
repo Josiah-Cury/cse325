@@ -93,7 +93,7 @@ sys_uptime(void)
 int
 sys_thread_create(void)
 {
-	return thread_create();
+	return 0;
 }
 
 int
