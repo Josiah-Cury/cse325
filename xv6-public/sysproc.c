@@ -93,7 +93,11 @@ sys_uptime(void)
 int
 sys_thread_create(void)
 {
-	return 0;
+	void (*fn)(void *), *arg, *stack;
+	argptr(0, (void *)&fn, sizeof(void (*)(void*)));
+	argptr(1, (void *)&arg, sizeof(void*));
+	argptr(2, (void *)&stack, sizeof(void*));
+	return thread_create(fn, arg, stack);
 }
 
 int

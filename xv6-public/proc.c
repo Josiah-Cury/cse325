@@ -557,6 +557,7 @@ thread_create(void (*fn) (void *), void *stack, void *arg) {
   np->parent = curproc;
   *np->tf = *curproc->tf;
   np->pgdir = curproc->pgdir;
+  np->stack = stack;
   
   *((uint*)(stack + PGSIZE - sizeof(uint))) = (uint)arg;
 	*((uint*)(stack + PGSIZE - 2 * sizeof(uint))) = 0xffffffff;
