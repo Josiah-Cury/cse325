@@ -7,6 +7,8 @@ struct balance {
     int amount;
 };
 
+lock_t lock;
+
 volatile int total_balance = 0;
 
 volatile unsigned int delay (unsigned int d) {
@@ -26,9 +28,11 @@ void do_work(void *arg){
     printf(1, "Starting do_work: s:%s\n", b->name);
 
     for (i = 0; i < b->amount; i++) { 
+    		 lock_acquire(&lock);
          old = total_balance;
-         delay(100000);
          total_balance = old + 1;
+         lock_release(&lock);
+         delay(100000);
     }
   
     printf(1, "Done s:%x\n", b->name);
@@ -38,6 +42,8 @@ void do_work(void *arg){
 }
 
 int main(int argc, char *argv[]) {
+
+	lock_init(&lock);
 
   struct balance b1 = {"b1", 3200};
   struct balance b2 = {"b2", 2800};

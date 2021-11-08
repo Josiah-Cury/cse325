@@ -1,5 +1,6 @@
 struct stat;
 struct rtcdate;
+typedef uint lock_t;
 
 // system calls
 int fork(void);
@@ -26,6 +27,9 @@ int uptime(void);
 int thread_create(void (*fn) (void *), void *stack, void *arg);
 int thread_join(void);
 int thread_exit(void);
+int lock_init(lock_t*);
+int lock_acquire(lock_t*);
+int lock_release(lock_t*);
 
 // ulib.c
 int stat(const char*, struct stat*);

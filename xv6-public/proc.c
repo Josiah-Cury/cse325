@@ -576,9 +576,6 @@ thread_create(void (*fn) (void *), void *stack, void *arg)
 	
 	// set the instruction pointer to the fn pointer
 	np->tf->eip = (uint)fn;
-	
-	// set the ebp register equal to the esp register??
-	//np->tf->ebp = np->tf->esp;
 
   // Clear %eax so that fork returns 0 in the child.
   np->tf->eax = 0;
@@ -661,4 +658,25 @@ thread_exit(void)
 	exit();
 	return 0;
 	
+}
+
+// initialize spinlock
+int
+lock_init(lock_t* lock) {
+	*lock = 0;
+	return 0;
+}
+
+// acquire spinlock
+int
+lock_acquire(lock_t* lock) {
+	while(xchg(lock, 1) != 0);
+	return 0;
+}
+
+// release spinlock
+int
+lock_release(lock_t* lock) {
+	xchg(lock, 0);
+	return 0;
 }

@@ -113,3 +113,27 @@ sys_thread_exit(void)
 {
 	return thread_exit();
 }
+
+int 
+sys_lock_init(void) 
+{
+	void *lock;
+	argptr(0, (void*)&lock, sizeof(void*));
+	return lock_init(lock);
+}
+
+int 
+sys_lock_acquire(void) 
+{
+	void *lock;
+	argptr(0, (void*)&lock, sizeof(void*));
+	return lock_acquire(lock);
+}
+
+int 
+sys_lock_release(void) 
+{
+	void *lock;
+	argptr(0, (void*)&lock, sizeof(void*));
+	return lock_release(lock);
+}
