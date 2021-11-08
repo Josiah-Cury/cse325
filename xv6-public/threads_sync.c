@@ -6,7 +6,7 @@ struct balance {
     char name[32];
     int amount;
 };
-struct lock_t lock;
+lock_t lock;
 
 volatile int total_balance = 0;
 

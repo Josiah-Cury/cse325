@@ -61,4 +61,10 @@ struct proc {
 struct lock_t
 {
 	uint locked;
-}
+};
+
+
+
+
+
+

@@ -643,7 +643,7 @@ int lock_init(struct lock_t *lock){
 }
 
 int lock_acquire(struct lock_t *lock){
-	while(xchg(&lock->locked, 1));
+	while(xchg(&lock->locked, 1) != 0);
 	return 0;
 }
 

@@ -117,7 +117,7 @@ sys_lock_init(void)
 {
 	struct lock_t *lock;
 	
-	argptr(0, &lock, sizeof(struct lock_t *));
+	argptr(0, (void*)&lock, sizeof(struct lock_t *));
 	return lock_init(lock);
 }
 
@@ -126,7 +126,7 @@ sys_lock_acquire(void)
 {
 	struct lock_t *lock;
 	
-	argptr(0, &lock, sizeof(struct lock_t *));
+	argptr(0, (void*)&lock, sizeof(struct lock_t *));
 	return lock_acquire(lock);
 }
 
@@ -135,7 +135,7 @@ sys_lock_release(void)
 {
 	struct lock_t *lock;
 	
-	argptr(0, &lock, sizeof(struct lock_t *));
+	argptr(0, (void*)&lock, sizeof(struct lock_t *));
 	return lock_release(lock);
 }
 
