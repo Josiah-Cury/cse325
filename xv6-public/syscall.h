@@ -23,3 +23,6 @@
 #define SYS_thread_create 22
 #define SYS_thread_join 23
 #define SYS_thread_exit 24
+#define SYS_lock_init 25
+#define SYS_lock_acquire 26
+#define SYS_lock_release 27

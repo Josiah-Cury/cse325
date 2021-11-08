@@ -637,6 +637,21 @@ thread_exit(void){
 	return 0;
 }
 
+int lock_init(struct lock_t *lock){
+	lock->locked = 0;
+	return 0;
+}
+
+int lock_acquire(struct lock_t *lock){
+	while(xchg(&lock->locked, 1));
+	return 0;
+}
+
+int lock_release(struct lock_t *lock){
+	xchg(&lock->locked, 0);
+	return 0;
+}
+
 
 
 

@@ -111,3 +111,42 @@ sys_thread_exit(void)
 {
 	return thread_exit();
 }
+
+int
+sys_lock_init(void)
+{
+	struct lock_t *lock;
+	
+	argptr(0, &lock, sizeof(struct lock_t *));
+	return lock_init(lock);
+}
+
+int
+sys_lock_acquire(void)
+{
+	struct lock_t *lock;
+	
+	argptr(0, &lock, sizeof(struct lock_t *));
+	return lock_acquire(lock);
+}
+
+int
+sys_lock_release(void)
+{
+	struct lock_t *lock;
+	
+	argptr(0, &lock, sizeof(struct lock_t *));
+	return lock_release(lock);
+}
+
+
+
+
+
+
+
+
+
+
+
+
