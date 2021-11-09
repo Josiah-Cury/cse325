@@ -1,7 +1,10 @@
 struct stat;
 struct rtcdate;
 
-typedef struct lock_t lock_t;
+struct lock_t
+{
+	uint locked;
+};
 
 // system calls
 int fork(void);

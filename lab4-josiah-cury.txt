@@ -1,0 +1,18 @@
+ESTIMATE of time to complete lab: 20 hours
+ 
+      Start  Time  Lab
+Date  Time   Spent Part Work completed
+----  -----  ----  ---- ---------
+11/6  12:00  7:00  1    Read assignment, attempted to study the functions
+												wait(), exit(), fork(). Modified functions to create
+												threads_create(), thread_join(), and thread_exit()
+
+11/7  12:00  7:00  2    Cried for a bit. Reviewed slides for mutex lock. Created
+												all the necessary functions.
+-------------------------------------------------------------------------------
+	    	     14:00  TOTAL time spent
+	    	     
+The whole lab was difficult. I felt as though I had no idea how the xv6 worked,
+and was given no hints. Looking up what I needed was incredibly difficult and 
+extremely time consuming. I am glad the lab is over. Everything was a bug and 
+took multiple fixes and modification/tweakings.

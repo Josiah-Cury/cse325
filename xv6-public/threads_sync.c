@@ -6,7 +6,7 @@ struct balance {
     char name[32];
     int amount;
 };
-lock_t lock;
+struct lock_t lock;
 
 volatile int total_balance = 0;
 
@@ -30,9 +30,10 @@ void do_work(void *arg){
     for (i = 0; i < b->amount; i++) { 
     		 lock_acquire(&lock);
          old = total_balance;
-         delay(100000);
          total_balance = old + 1;
+         delay(100000);
     		 lock_release(&lock);
+    		 
     }
     
   	

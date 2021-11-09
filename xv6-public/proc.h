@@ -58,10 +58,7 @@ struct proc {
 //   fixed-size stack
 //   expandable heap
 
-struct lock_t
-{
-	uint locked;
-};
+struct lock_t;
 
 
 
