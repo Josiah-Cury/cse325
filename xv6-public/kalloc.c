@@ -21,6 +21,7 @@ struct {
   struct spinlock lock;
   int use_lock;
   struct run *freelist;
+  int numFreePages;		// Added a number to keep a track of free pages. -Josiah
 } kmem;
 
 // Initialization happens in two phases.
@@ -33,6 +34,7 @@ kinit1(void *vstart, void *vend)
 {
   initlock(&kmem.lock, "kmem");
   kmem.use_lock = 0;
+  kmem.numFreePages = 0;		// Initialize with no free pages. -Josiah
   freerange(vstart, vend);
 }
 
@@ -72,6 +74,7 @@ kfree(char *v)
   r = (struct run*)v;
   r->next = kmem.freelist;
   kmem.freelist = r;
+  kmem.numFreePages++;		//A dd a free page, because it was freed. -Josiah
   if(kmem.use_lock)
     release(&kmem.lock);
 }
@@ -87,10 +90,23 @@ kalloc(void)
   if(kmem.use_lock)
     acquire(&kmem.lock);
   r = kmem.freelist;
-  if(r)
+  if(r){
     kmem.freelist = r->next;
+    kmem.numFreePages--;			// Remove a free page, because it was allocated. -Josiah
+  }
   if(kmem.use_lock)
     release(&kmem.lock);
   return (char*)r;
+}
+
+// Added this function, returns number of free pages -Josiah
+int
+getNumFreePages(void)
+{
+	acquire(&kmem.lock);
+	int free_pages = kmem.numFreePages;
+	release(&kmem.lock);
+	
+	return free_pages;
 }
 

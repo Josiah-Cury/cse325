@@ -89,3 +89,10 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+// Josiah
+int
+sys_getNumFreePages(void)
+{
+	return getNumFreePages();
+}
