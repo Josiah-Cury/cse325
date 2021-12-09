@@ -68,7 +68,10 @@ char*           kalloc(void);
 void            kfree(char*);
 void            kinit1(void*, void*);
 void            kinit2(void*, void*);
-int							getNumFreePages(void);
+int							getNumFreePages(void);	// Josiah
+void						inc_ref_count(uint pa);
+void						dec_ref_count(uint pa);
+uint						get_ref_count(uint pa);
 
 // kbd.c
 void            kbdintr(void);
@@ -186,6 +189,8 @@ void            switchuvm(struct proc*);
 void            switchkvm(void);
 int             copyout(pde_t*, uint, void*, uint);
 void            clearpteu(pde_t *pgdir, char *uva);
+pde_t*          copyuvm_cow(pde_t*, uint);	//Josiah
+void						handle_pgflt();
 
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x)/sizeof((x)[0]))

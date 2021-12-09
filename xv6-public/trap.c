@@ -45,6 +45,14 @@ trap(struct trapframe *tf)
       exit();
     return;
   }
+  
+  // Lab told me to put this here ¯\_(ツ)_/¯ 	-Josiah
+  if (tf->trapno == T_PGFLT) {
+		myproc()->tf = tf;
+		handle_pgflt ();
+		return;
+	}
+
 
   switch(tf->trapno){
   case T_IRQ0 + IRQ_TIMER:

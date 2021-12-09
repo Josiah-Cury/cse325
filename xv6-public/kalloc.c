@@ -9,6 +9,8 @@
 #include "mmu.h"
 #include "spinlock.h"
 
+#define PAGE_BITS 12
+
 void freerange(void *vstart, void *vend);
 extern char end[]; // first address after kernel loaded from ELF file
                    // defined by the kernel linker script in kernel.ld
@@ -17,11 +19,19 @@ struct run {
   struct run *next;
 };
 
+
+// memlayout.h:4:#define PHYSTOP 0xE000000           // Top physical memory
+
+// #define V2P(a) (((uint) (a)) - KERNBASE)				//Subtract KERNBASE, marked at 2GB
+
+// #define KERNBASE 0x80000000         // First kernel virtual address (2GB)
+
 struct {
   struct spinlock lock;
   int use_lock;
   struct run *freelist;
   int numFreePages;		// Added a number to keep a track of free pages. -Josiah
+  uint ref_count[PHYSTOP >> PAGE_BITS]; // Offset by 12 bits (log_2(4096)) 
 } kmem;
 
 // Initialization happens in two phases.
@@ -50,8 +60,10 @@ freerange(void *vstart, void *vend)
 {
   char *p;
   p = (char*)PGROUNDUP((uint)vstart);
-  for(; p + PGSIZE <= (char*)vend; p += PGSIZE)
+  for(; p + PGSIZE <= (char*)vend; p += PGSIZE){
+  	kmem.ref_count[V2P(p) >> PAGE_BITS] = 0;		//Initialize reference count to 0
     kfree(p);
+  }
 }
 //PAGEBREAK: 21
 // Free the page of physical memory pointed at by v,
@@ -66,15 +78,22 @@ kfree(char *v)
   if((uint)v % PGSIZE || v < end || V2P(v) >= PHYSTOP)
     panic("kfree");
 
-  // Fill with junk to catch dangling refs.
-  memset(v, 1, PGSIZE);
-
   if(kmem.use_lock)
     acquire(&kmem.lock);
   r = (struct run*)v;
-  r->next = kmem.freelist;
-  kmem.freelist = r;
-  kmem.numFreePages++;		//A dd a free page, because it was freed. -Josiah
+  
+  if(kmem.ref_count[V2P(v) >> PAGE_BITS] > 0)
+  	kmem.ref_count[V2P(v) >> PAGE_BITS]--;
+  	
+  
+  if(kmem.ref_count[V2P(v) >> PAGE_BITS] == 0) {
+    // Fill with junk to catch dangling refs.
+  	memset(v, 1, PGSIZE);
+		r->next = kmem.freelist;
+		kmem.freelist = r;
+		kmem.numFreePages++;		//Add a free page, because it was freed. -Josiah
+  }
+  
   if(kmem.use_lock)
     release(&kmem.lock);
 }
@@ -89,13 +108,18 @@ kalloc(void)
 
   if(kmem.use_lock)
     acquire(&kmem.lock);
+    
   r = kmem.freelist;
+
   if(r){
     kmem.freelist = r->next;
     kmem.numFreePages--;			// Remove a free page, because it was allocated. -Josiah
+    kmem.ref_count[V2P((char*) r) >> PAGE_BITS] = 1;
   }
+  
   if(kmem.use_lock)
     release(&kmem.lock);
+    
   return (char*)r;
 }
 
@@ -103,10 +127,37 @@ kalloc(void)
 int
 getNumFreePages(void)
 {
+	int free_pages;
 	acquire(&kmem.lock);
-	int free_pages = kmem.numFreePages;
+	free_pages = kmem.numFreePages;
 	release(&kmem.lock);
 	
 	return free_pages;
+}
+
+void
+inc_ref_count(uint pa)		//pa is used for physical address in xv6
+{
+	acquire(&kmem.lock);
+	kmem.ref_count[pa>>PAGE_BITS]++;
+	release(&kmem.lock);
+}
+
+void
+dec_ref_count(uint pa)		//pa is used for physical address in xv6
+{
+	acquire(&kmem.lock);
+	kmem.ref_count[pa>>PAGE_BITS]--;
+	release(&kmem.lock);
+}
+
+uint 
+get_ref_count(uint pa)
+{
+	uint count;
+	acquire(&kmem.lock);
+	count = kmem.ref_count[pa>>PAGE_BITS];
+	release(&kmem.lock);
+	return count;
 }
 

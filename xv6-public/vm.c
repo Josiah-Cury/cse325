@@ -344,6 +344,82 @@ bad:
   return 0;
 }
 
+
+// Our own implementation of copyuvm -Josiah
+pde_t*
+copyuvm_cow(pde_t *pgdir, uint sz)
+{
+  pde_t *d;
+  pte_t *pte;
+  uint pa, i, flags;
+
+  if((d = setupkvm()) == 0)
+    return 0;
+  for(i = 0; i < sz; i += PGSIZE){
+    if((pte = walkpgdir(pgdir, (void *) i, 0)) == 0)
+      panic("copyuvm: pte should exist");
+    if(!(*pte & PTE_P))
+      panic("copyuvm: page not present");
+    *pte &= ~PTE_W;                      // make the permissions for the parent_page read only
+    pa = PTE_ADDR(*pte);
+    flags = PTE_FLAGS(*pte);
+
+		if(mappages(d, (void*)i, PGSIZE, pa, flags) < 0) {
+      goto bad;
+    }
+    inc_ref_count(pa);
+  }
+  lcr3(V2P(pgdir)); //Flush? Cause Lab said so?
+  return d;
+
+bad:
+  freevm(d);
+  return 0;
+
+}
+
+void
+handle_pgflt()
+{
+	uint fault_va = rcr2();  	//When a page fault occurs in x86, the processor sets control
+															 	// register 2 (CR2) to the address the program was attempting to
+															 	//access. You can read this in xv6 using rcr2() . (From Google)
+	
+	pte_t *pte = walkpgdir(myproc()->pgdir, (void*)fault_va, 0);
+	
+	// Check to see if walkpgdir() returns, if the faulty virtual address is not in physical
+	// memory. Also added checks from another xv6 function to see if the pte has permissions.
+	
+	if(pte == 0 || fault_va > KERNBASE || (*pte & PTE_P) == 0 || (*pte & PTE_U) == 0) {
+   	cprintf("Warning! Illegal virtual address.");
+   	myproc()->killed = 1;
+  }
+  
+  uint fault_pa = PTE_ADDR(*pte);
+  uint ref_count = get_ref_count(fault_pa);
+  
+  if(ref_count > 1) {
+  	char *mem = kalloc();
+  	
+  	if(mem == 0) {		// If memory is not allocated, Out of memory, kill and return. - Josiah
+  		myproc()->killed = 1;
+  		return;
+  	}
+  	
+  	memmove(mem, (char*)P2V(fault_pa), PGSIZE); // Took this from original copyuvm
+  	*pte = PTE_U | PTE_W | PTE_P | V2P(mem);	// Write permissions for new page table entry
+  	dec_ref_count(fault_pa); // We made a copy, so one less reference
+  	
+  	lcr3(V2P(myproc()->pgdir));
+  	return;
+  	
+  } else if (ref_count == 1) {
+  	*pte |= PTE_W;
+  	lcr3(V2P(myproc()->pgdir));
+    return;
+  }
+}
+
 //PAGEBREAK!
 // Map user virtual address to kernel address.
 char*
